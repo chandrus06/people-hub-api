@@ -34,12 +34,13 @@ export const getUserById = async (req, res) => {
 
 export const createUser = async (req, res) => {
   try {
-    const { name, email, age } = req.body;
+    const { empId, password, email, outlookId } = req.body;
 
     const user = await User.create({
-      name,
+      empId,
+      password,
       email,
-      age
+      outlookId
     });
 
     res.status(201).json(user);
