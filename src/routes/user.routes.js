@@ -27,7 +27,7 @@ router.get(
 
 router.post(
   '/',
-  authenticate,
+  // authenticate,
   createUser
 );
 

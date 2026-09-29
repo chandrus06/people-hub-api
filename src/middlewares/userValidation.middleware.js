@@ -1,10 +1,10 @@
 import { body } from 'express-validator';
 
 const createUserValidation = [
-  body('name')
+  body('empId')
     .trim()
     .notEmpty()
-    .withMessage('Name is required'),
+    .withMessage('Employee ID is required'),
 
   body('email')
     .isEmail()
