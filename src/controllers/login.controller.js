@@ -2,24 +2,53 @@ import User from "../models/user.model.js";
 
 export const loginUser = async (req, res) => {
   try {
-    const user = await User.findOne({
-      empId: req.body.empId,
-      password: req.body.password
-    });
+    const { empId, password } = req.body;
 
-    if (!user) {
+    // 1. Find user in database
+    const user = await User.findOne({ empId });
+
+   if (!user) {
       return res.status(401).json({
         message: 'Unauthorized'
       });
     }
 
-    res.status(200).json({
-      message: 'Login successful'
+    // 2. Compare entered password with hashed password
+    const isPasswordValid = await bcrypt.compare(
+      password,
+      user.passwordHash
+    );
+
+    if (!isPasswordValid) {
+      return res.status(401).json({
+        message: "Invalid email or password"
+      });
+    }
+
+    // 3. Create JWT
+    const token = jwt.sign(
+      {
+        userId: user._id,
+        empId: user.empId
+      },
+      process.env.JWT_SECRET,
+      {
+        expiresIn: process.env.JWT_EXPIRES_IN
+      }
+    );
+
+    // 4. Send token
+    res.json({
+      message: "Login successful",
+      token
     });
+
   } catch (error) {
     res.status(500).json({
-      message: 'Failed to login',
+      message: "Failed to login",
       error: error.message
     });
   }
 };
+
+
