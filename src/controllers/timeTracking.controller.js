@@ -1,5 +1,21 @@
 import TimeTracking from "../models/timeTracking.model.js";
 
+const formatDateTime = (date) => {
+  if (!date) return null;
+  const d = new Date(date);
+  const pad = (n) => (n < 10 ? '0' + n : n);
+  const day = pad(d.getDate());
+  const month = pad(d.getMonth() + 1);
+  const year = d.getFullYear();
+  let hours = d.getHours();
+  const minutes = pad(d.getMinutes());
+  const ampm = hours >= 12 ? 'PM' : 'AM';
+  hours = hours % 12;
+  hours = hours ? hours : 12;
+  const strHours = pad(hours);
+  return `${day}-${month}-${year} ${strHours}:${minutes} ${ampm}`;
+};
+
 export const punchedIn = async (req, res) => {
   try {
     const { empId } = req.body;
@@ -20,9 +36,15 @@ export const punchedIn = async (req, res) => {
       punchInTime: Date.now()
     });
 
+    const responseData = {
+      ...timeTracking.toObject(),
+      punchInTime: formatDateTime(timeTracking.punchInTime),
+      punchOutTime: formatDateTime(timeTracking.punchOutTime)
+    };
+
     res.status(201).json({
       message: "Punched in successfully",
-      timeTracking
+      timeTracking: responseData
     });
   } catch (error) {
     res.status(500).json({
@@ -47,14 +69,18 @@ export const punchedOut = async (req, res) => {
       });
     }
 
-    const timeTracking = await TimeTracking.create({
-      ...existingTimeTracking,
-      punchOutTime: Date.now()
-    });
+    existingTimeTracking.punchOutTime = Date.now();
+    await existingTimeTracking.save();
 
-    res.status(201).json({
+    const responseData = {
+      ...existingTimeTracking.toObject(),
+      punchInTime: formatDateTime(existingTimeTracking.punchInTime),
+      punchOutTime: formatDateTime(existingTimeTracking.punchOutTime)
+    };
+
+    res.status(200).json({
       message: "Punched out successfully",
-      timeTracking
+      timeTracking: responseData
     });
   } catch (error) {
     res.status(500).json({
