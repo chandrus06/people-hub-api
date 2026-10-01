@@ -35,10 +35,16 @@ const userSchema = new mongoose.Schema(
     },
     outlookId: {
       type: String,
-      required: true,
+      required: false,
       unique: true,
       trim: true
-    }
+    },
+    termsAccepted: {
+      type: Boolean,
+      default: false,
+      required: true
+    },
+    
   },
   {
     timestamps: true
