@@ -1,4 +1,6 @@
 import User from "../models/user.model.js";
+import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
 
 export const loginUser = async (req, res) => {
   try {
@@ -9,23 +11,24 @@ export const loginUser = async (req, res) => {
 
    if (!user) {
       return res.status(401).json({
-        message: 'Unauthorized'
+        message: 'User not yet registered'
       });
     }
-
+    console.log("user", user);
     // 2. Compare entered password with hashed password
     const isPasswordValid = await bcrypt.compare(
       password,
-      user.passwordHash
+      user.password
     );
+    console.log("isPasswordValid", isPasswordValid);
 
     if (!isPasswordValid) {
       return res.status(401).json({
-        message: "Invalid email or password"
+        message: "Invalid password"
       });
     }
 
-    // 3. Create JWT
+    // // 3. Create JWT
     const token = jwt.sign(
       {
         userId: user._id,
@@ -36,6 +39,8 @@ export const loginUser = async (req, res) => {
         expiresIn: process.env.JWT_EXPIRES_IN
       }
     );
+
+    console.log("token", token);
 
     // 4. Send token
     res.json({

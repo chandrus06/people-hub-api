@@ -5,6 +5,7 @@ import rateLimit from 'express-rate-limit';
 import userRoutes from './routes/user.routes.js';
 import loginRoutes from './routes/login.routes.js';
 import timeTrackingRoutes from './routes/timeTracking.routes.js';
+import profileRoutes from './routes/profile.routes.js';
 
 const app = express();
 const limiter = rateLimit({
@@ -22,8 +23,9 @@ app.use(express.json({
 
 app.use(limiter);
 
-app.use('/api/users', userRoutes);
 app.use('/api/login', loginRoutes);
+app.use('/api/users', userRoutes);
+app.use('/api/profile',profileRoutes);
 app.use('/api/time-tracking',timeTrackingRoutes);
 
 export default app;
