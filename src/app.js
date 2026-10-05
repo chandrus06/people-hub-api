@@ -25,7 +25,7 @@ app.use(limiter);
 
 app.use('/api/login', loginRoutes);
 app.use('/api/users', userRoutes);
-app.use('/api/profile',profileRoutes);
+app.use('/api/signup',profileRoutes);
 app.use('/api/time-tracking',timeTrackingRoutes);
 
 export default app;
