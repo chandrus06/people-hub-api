@@ -1,13 +1,7 @@
 import { Router } from 'express';
-import authenticateUser from '../middlewares/authentication.middleware.js';
-
+import { createUser } from '../controllers/user.controller.js';
 const router = Router();
 
-router.get('/profile', authenticateUser, (req, res) => {
-  res.status(200).json({
-    message: 'User authenticated successfully',
-    user: req.user
-  });
-});
+router.post('/', createUser);
 
 export default router;
