@@ -53,7 +53,7 @@ export const createUser = async (req, res) => {
       });
     }
     const hashedPassword = await bcrypt.hash(password, 10);
-    const user = await User.create({
+    const userData = {
       empId,
       firstName,
       lastName,
@@ -61,9 +61,14 @@ export const createUser = async (req, res) => {
       confirmPassword: hashedPassword,
       password: hashedPassword,
       email,
-      outlookId,
       termsAccepted,
-    });
+    };
+
+    if (outlookId) {
+      userData.outlookId = outlookId;
+    }
+
+    const user = await User.create(userData);
 
     res.status(201).json({
       message: "User created successfully",

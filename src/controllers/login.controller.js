@@ -14,13 +14,11 @@ export const loginUser = async (req, res) => {
         message: 'User not yet registered'
       });
     }
-    console.log("user", user);
     // 2. Compare entered password with hashed password
     const isPasswordValid = await bcrypt.compare(
       password,
       user.password
     );
-    console.log("isPasswordValid", isPasswordValid);
 
     if (!isPasswordValid) {
       return res.status(401).json({
@@ -39,8 +37,6 @@ export const loginUser = async (req, res) => {
         expiresIn: process.env.JWT_EXPIRES_IN
       }
     );
-
-    console.log("token", token);
 
     // 4. Send token
     res.json({
