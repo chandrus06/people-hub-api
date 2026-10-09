@@ -37,31 +37,54 @@ export const createUser = async (req, res) => {
   try {
     const {
       empId,
+      employeeId,
       firstName,
       lastName,
       company,
+      companyName,
+      role,
+      phone,
+      department,
+      address,
       password,
       confirmPassword,
       email,
+      companyMail,
+      profileImage,
       outlookId,
       termsAccepted,
     } = req.body;
     
-    if(password !== confirmPassword){
+    // Map fields to support both sign-up and user-create forms
+    const finalEmpId = empId || employeeId;
+    const finalCompany = company || companyName;
+
+    let finalPassword = password;
+    if (!password) {
+      // Default password if not provided (e.g. from admin user-create)
+      finalPassword = "Welcome@123";
+    } else if (password !== confirmPassword) {
       return res.status(400).json({
         message: "Passwords do not match",
       });
     }
-    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const hashedPassword = await bcrypt.hash(finalPassword, 10);
     const userData = {
-      empId,
+      empId: finalEmpId,
       firstName,
       lastName,
-      company,
+      company: finalCompany,
       confirmPassword: hashedPassword,
       password: hashedPassword,
       email,
       termsAccepted,
+      role,
+      phone,
+      department,
+      address,
+      companyMail,
+      profileImage,
     };
 
     if (outlookId) {
@@ -75,10 +98,18 @@ export const createUser = async (req, res) => {
       user: {
         id: user._id,
         empId: user.empId,
+        employeeId: user.empId,
         firstName: user.firstName,
         lastName: user.lastName,
         company: user.company,
+        companyName: user.company,
         email: user.email,
+        companyMail: user.companyMail,
+        department: user.department,
+        role: user.role,
+        phone: user.phone,
+        address: user.address,
+        profileImage: user.profileImage,
         outlookId: user.outlookId,
         termsAccepted: user.termsAccepted,
       },

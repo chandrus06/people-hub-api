@@ -21,13 +21,32 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    companyMail: {
+      type: String,
+      lowercase: true,
+      trim: true,
+    },
+    department: {
+      type: String,
+    },
+    role: {
+      type: String,
+    },
+    phone: {
+      type: String,
+    },
+    address: {
+      type: String,
+    },
+    profileImage: {
+      type: String,
+    },
     password: {
       type: String,
       required: true,
     },
     confirmPassword: {
       type: String,
-      required: true,
     },
     email: {
       type: String,
@@ -45,12 +64,11 @@ const userSchema = new mongoose.Schema(
     termsAccepted: {
       type: Boolean,
       default: false,
-      required: true,
     },
   },
   {
     timestamps: true,
-  },
+  }
 );
 
 const User = mongoose.model("User", userSchema);
